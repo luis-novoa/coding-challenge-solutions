@@ -13,17 +13,29 @@
 def merge_trees(t1, t2)
   t1 = turn_into_array(t1)
   t2 = turn_into_array(t2)
-  output = []
   i = 0
-  limit = [t1.size, t2.size].max
+  ts = [t1, t2].sort_by(&:size)
+  biggest_t = ts.pop
+  smallest_t = ts.pop
+  limit = biggest_t.size
   while i < limit
-      t1[i] ? t1_val = t1[i].val : t1_val = nil
-      t2[i] ? t2_val = t2[i].val : t2_val = nil
-      result = [t1_val, t2_val].compact
-      result.size.zero? ? output[i] = nil : output.push(TreeNode.new(result.sum))
+      if biggest_t[i]
+          biggest_t[i].val += smallest_t[i].val if smallest_t[i]
+      else
+          biggest_t[i] = smallest_t[i]
+          break if i.zero?
+
+          if i%2 == 0
+              parent = i/2 - 1
+              biggest_t[parent].right = biggest_t[i]
+          else
+              parent = (i + 1)/2 - 1
+              biggest_t[parent].left = biggest_t[i]
+          end
+      end
       i += 1
   end
-  output[0]
+  biggest_t[0]
 end
 
 def turn_into_array(node)
@@ -40,22 +52,3 @@ def turn_into_array(node)
   end
   output
 end
-
-  # while i < limit
-  #     t1[i] ? t1_val = t1[i].val : t1_val = nil
-  #     t2[i] ? t2_val = t2[i].val : t2_val = nil
-  #     result = [t1_val, t2_val].compact
-  #     result.size.zero? ? output[i] = nil : output.push(TreeNode.new(result.sum))
-  #     i += 1
-  # end
-  # i -= 1
-  # while i > 0
-  #     if i%2 == 0
-  #         parent = i/2 - 1
-  #         output[parent].right = output[i]
-  #     else
-  #         parent = (i + 1)/2 - 1
-  #         output[parent].left = output[i]
-  #     end
-  #     i -= 1
-  # end
